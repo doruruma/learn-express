@@ -26,7 +26,13 @@ app.get('/', (req, res) => {
 // api routes
 app.use('/api/workouts', workoutRoutes)
 
-// listening
-app.listen(process.env.APP_PORT, (req, res) => {
-  console.info(`server started at port ${process.env.APP_PORT}`)
-})
+// mongoose
+const mongoose = require('mongoose')
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.info('mongoose connected')
+    // listening
+    app.listen(process.env.APP_PORT, (req, res) => {
+      console.info(`server started at port ${process.env.APP_PORT}`)
+    })
+  })
