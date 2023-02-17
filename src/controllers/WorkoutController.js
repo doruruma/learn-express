@@ -25,6 +25,18 @@ const get = async (req, res) => {
 // store
 const store = async (req, res) => {
     const { title, load, reps } = req.body
+    // validation
+    let emptyFields = []
+    if (!title)
+        emptyFields.push('title')
+    if (!load)
+        emptyFields.push('load')
+    if (!reps)
+        emptyFields.push('reps')
+    if (emptyFields.length > 0) {
+        return res.status(400)
+            .json({ error: 'Please fill in all fields', emptyFields })
+    }
     try {
         // insert workout
         const workout = await Workout.create({ title, load, reps })
@@ -57,7 +69,7 @@ const destroy = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id))
         return res.status(204).json('')
     // delete workout
-    const workout = Workout.findOneAndDelete({ _id: id })
+    const workout = await Workout.findOneAndDelete({ _id: id })
     if (!workout)
         return res.status(204).json('')
     // response
